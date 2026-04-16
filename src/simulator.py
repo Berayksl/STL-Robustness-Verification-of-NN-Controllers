@@ -88,7 +88,8 @@ class Continuous2DEnv:
                     bbox=dict(boxstyle='round,pad=0.25', fc='white', ec='black', alpha=0.75),
                     zorder=10
                 )
-
+            area = plt.Rectangle((-7,7), 3, 1, fill=False, edgecolor='red')
+            self.ax.add_patch(area)
             #self.target_region_plot = plt.Circle(self.target_region_center, self.target_region_radius, color='b', fill=False, linestyle='-', label='Target Region')
             #self.ax.add_patch(self.target_region_plot)
             self.safe_region_plots = []
@@ -234,6 +235,8 @@ class Continuous2DEnv:
         l = 1/t_star * np.log((gamma_0 - gamma_inf) / (rho_max - gamma_inf))
 
         gamma = (gamma_0 - gamma_inf) * np.exp(-l * (current_time+1)) + gamma_inf
+
+        step_penalty = -0.01 # small living penalty to discourage waiting
         
         penalty = 0
         #penalty for hitting obstacles
@@ -242,7 +245,7 @@ class Continuous2DEnv:
             if dist_to_obstacle <= obstacle['radius']:
                 penalty = -100  # Large penalty for hitting an obstacle
 
-        beta = 0.15 #weight for obstacle penalty
+        beta = 0.2 #weight for obstacle penalty
 
         reward = rho + gamma - rho_max + beta * penalty
 

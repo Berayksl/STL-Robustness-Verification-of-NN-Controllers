@@ -183,7 +183,7 @@ def plot_final_results(rewards, folder_name):
 
 
 if __name__ == "__main__":
-	agent_init_loc = [-7.0, 4.0] #initial location of the agent
+	agent_init_loc = [7.5, 6.5] #initial location of the agent
 	#Static goal region:
 	goal_region_radius = 1
 	goals = {
@@ -195,7 +195,8 @@ if __name__ == "__main__":
 	1: {'label': 1,'center': (2, 3), 'radius': 2, 'u_max': 0, 'remaining_time': 100, 'movement':{'type': 'static'}, 'color': 'blue'}
 	}
 
-	disturbance_interval = [0, 0]
+	#disturbance_interval = [-0.1, 0.1]
+	disturbance_interval = None
 
 
     #config dictionary for the environment
@@ -216,16 +217,16 @@ if __name__ == "__main__":
 		"disturbance": disturbance_interval #disturbance range in both x and y directions [w_min, w_max]
     }
 
-	action_range = [0.6, 0.6] #action range for the RL model (for the neural network output layer) [3,3] for case-1, [4,4] for case-2
+	action_range = [0.5, 0.5] #action range for the RL model (for the neural network output layer) [3,3] for case-1, [4,4] for case-2
 
 	#learning hyperparameters:
 	hyperparameters = {
 				'gamma': 0.99,
 				'tau': 0.005,
-				'hidden_size': 64, 
-				'buffer_size': int(1e6),
-				'batch_size': 128,
-				'max_timesteps_per_episode': 40, 
+				'hidden_size': 128,
+				'buffer_size': int(1e8),
+				'batch_size': 256,
+				'max_timesteps_per_episode': 100, 
 				'num_episodes': 200,
 				'n_updates_per_iteration': 1,
 				'deterministic': False,
@@ -253,6 +254,7 @@ if __name__ == "__main__":
 		config['dt_render'] = 0.03
 		config['init_loc'] = agent_init_loc
 		config['randomize_loc'] = False #randomize the agent location at the end of each episode
+		#config['disturbance'] = [-0.5, 0.5]
 		env = Continuous2DEnv(config)
 		max_timesteps_per_episode = hyperparameters['max_timesteps_per_episode']
 		# Load in the model file

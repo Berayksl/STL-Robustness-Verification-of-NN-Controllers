@@ -55,6 +55,7 @@ class SAC:
 
         self.env = env
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print("Using device:", self.device)
 
         self.obs_dim = env.observation_space.shape[0] + 1 # +1 for the time step 
         self.act_dim = env.action_space.shape[0]
@@ -240,6 +241,7 @@ class SAC:
                         _=self.update(self.batch_size, auto_entropy=self.auto_entropy, target_entropy = -1. * self.act_dim)
 
                 if done: #terminate the episode if goal region is reached
+                    #print(f"Episode done at pos={state[:2]}")
                     break
 
             if eps % 20 == 0 and eps>0: # plot and model saving interval

@@ -112,12 +112,16 @@ class PolicyNetwork(nn.Module):
         normal = Normal(0, 1)
         z      = normal.sample(mean.shape).to(self.device)
 
-        if deterministic:
-            action = self.action_range * torch.tanh(mean)
-        else:
-            action = self.action_range * torch.tanh(mean + std*z)
+        # if deterministic:
+        #     action = self.action_range * torch.tanh(mean)
+        # else:
+        #     action = self.action_range * torch.tanh(mean + std*z)
 
-        return action.detach().cpu().numpy()[0]
+        if deterministic:
+            action = np.clip(mean.detach().cpu().numpy()[0], -self.action_range.cpu().numpy(), self.action_range.cpu().numpy())
+        
+
+        return action
 
     #TODO: fix this function to make it generalizable for different action ranges
     def sample_action(self,):

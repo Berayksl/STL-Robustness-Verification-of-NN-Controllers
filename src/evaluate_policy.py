@@ -1,4 +1,5 @@
 import numpy as np
+from robustness_func import step_robustness_fn
 
 def _log_summary(ep_len, ep_ret, ep_num):
 		# Round decimal places for more aesthetic logging messages
@@ -20,8 +21,8 @@ def rollout(policy, env, max_timesteps_per_episode):
 
     np.random.seed(10)  # for reproducibility
 
-    x_min, x_max = -100, 100
-    y_min, y_max = -100, 100
+    x_min, x_max = -7, 6
+    y_min, y_max = -10, 10
 
     # generate 100 pairs
     x = np.random.uniform(x_min, x_max, 100)
@@ -51,6 +52,11 @@ def rollout(policy, env, max_timesteps_per_episode):
             t += 1
 
             action = policy.get_action(obs, deterministic=deterministic)
+            #action = np.array([0,0])
+            #print('action;', action, flush=True)
+
+            robustness = step_robustness_fn(obs, policy, env.goals)
+            print(f"Step: {t}, Robustness: {robustness}", flush=True)
 
             next_obs, reward, done = env.step(action, t)
 
