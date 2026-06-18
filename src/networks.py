@@ -84,6 +84,9 @@ class PolicyNetwork(nn.Module):
         log_std = self.log_std_linear(x)
         log_std = torch.clamp(log_std, self.log_std_min, self.log_std_max)
         
+
+
+        
         return mean, log_std
     
     def evaluate(self, state, epsilon=1e-6):

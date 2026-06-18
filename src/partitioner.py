@@ -184,10 +184,16 @@ def recursive_adaptive_partition_tree(model_path, input_range):
         phi := phi1 and phi2 and phi3    # boolean combination 
         """
 
-    bounds = state_propagation(model_path ,input_range)
-    pred1_robustness_bounds = [get_robustness_bounds(bounds[i], obstacles[0]) for i in range(len(bounds))] #robustness bounds for predicate 1 (G !obstacle1)
-    pred2_robustness_bounds = [get_robustness_bounds(bounds[i], obstacles[1]) for i in range(len(bounds))] #robustness bounds for predicate 2 (G !obstacle2)
-    pred3_robustness_bounds = [get_robustness_bounds(bounds[i], goals[0]) for i in range(len(bounds))] #robustness bounds for predicate 3 (F goal)
+    all_bounds = state_propagation(model_path ,input_range, goals, obstacles)
+
+    bounds = all_bounds[0]
+    pred1_robustness_bounds = all_bounds[1]
+    pred2_robustness_bounds = all_bounds[2]
+    pred3_robustness_bounds = all_bounds[3]
+
+    #pred1_robustness_bounds = [get_robustness_bounds(bounds[i], obstacles[0]) for i in range(len(bounds))] #robustness bounds for predicate 1 (G !obstacle1)
+    # pred2_robustness_bounds = [get_robustness_bounds(bounds[i], obstacles[1]) for i in range(len(bounds))] #robustness bounds for predicate 2 (G !obstacle2)
+    # pred3_robustness_bounds = [get_robustness_bounds(bounds[i], goals[0]) for i in range(len(bounds))] #robustness bounds for predicate 3 (F goal)
 
 
     # for i in range(len(bounds)):
@@ -208,8 +214,8 @@ def recursive_adaptive_partition_tree(model_path, input_range):
     rho_mins = []
     rho_maxs = []
     for i in range(len(bounds)):
-        rho_mins.append((-pred1_robustness_bounds[i][1], -pred2_robustness_bounds[i][1], pred3_robustness_bounds[i][0]))
-        rho_maxs.append((-pred1_robustness_bounds[i][0], -pred2_robustness_bounds[i][0], pred3_robustness_bounds[i][1]))
+        rho_mins.append((pred1_robustness_bounds[i][0], pred2_robustness_bounds[i][0], pred3_robustness_bounds[i][0]))
+        rho_maxs.append((pred1_robustness_bounds[i][1], pred2_robustness_bounds[i][1], pred3_robustness_bounds[i][1]))
 
 
     print("Rho mins:", rho_mins)
